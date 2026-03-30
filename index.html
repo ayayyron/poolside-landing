@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poolside — Run Your Pool From Poolside</title>
+  <meta name="description" content="The easiest way to run golf pools, fantasy leagues, and office picks with live scores, real-time leaderboards, and automatic payouts. Free to start.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%230f172a'/%3E%3Ctext x='32' y='42' font-size='32' text-anchor='middle' fill='%23d4af37' font-family='Georgia,serif' font-weight='bold'%3EP%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1729;
+      --navy-light: #0f172a;
+      --gold: #d4af37;
+      --gold-light: #e8c84a;
+      --gold-faint: rgba(212,175,55,0.1);
+      --text: #f0ead0;
+      --text-muted: rgba(240,234,208,0.6);
+      --text-faint: rgba(240,234,208,0.3);
+      --red: #ff6666;
+      --green: #4ade80;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(212,175,55,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 30%, rgba(212,175,55,0.04) 0%, transparent 50%),
+        linear-gradient(175deg, #0a1729 0%, #0f172a 50%, #0a1729 100%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(transparent, var(--navy));
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border: 1px solid var(--gold-faint);
+      border-radius: 20px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      color: var(--gold);
+      margin-bottom: 20px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+    .hero h1 span {
+      display: block;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 400;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-muted);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 8px;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      border: 2px solid var(--gold);
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.25); }
+    .btn-secondary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: transparent;
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      letter-spacing: 1px;
+      border: 2px solid rgba(212,175,55,0.3);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--gold); background: var(--gold-faint); }
+    .hero-note {
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--text-faint);
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    /* ── SECTIONS ──────────────────────────────────── */
+    section { padding: 100px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* ── FEATURES ──────────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.08);
+      border-radius: 12px;
+      padding: 32px;
+      transition: all 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(212,175,55,0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── HOW IT WORKS ─────────────────────────────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+      counter-reset: step;
+    }
+    .step {
+      text-align: center;
+      padding: 24px;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      display: inline-flex;
+      width: 48px;
+      height: 48px;
+      align-items: center;
+      justify-content: center;
+      background: var(--gold-faint);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 50%;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .step h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── PRICING ───────────────────────────────────── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.1);
+      border-radius: 14px;
+      padding: 36px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.featured {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.04);
+    }
+    .price-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--navy);
+      padding: 4px 16px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .price-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .price-amount {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 16px 0 4px;
+    }
+    .price-amount span { font-size: 16px; color: var(--text-muted); font-weight: 400; }
+    .price-note { font-size: 13px; color: var(--text-faint); margin-bottom: 24px; }
+    .price-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .price-features li {
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .price-features li::before {
+      content: '✓  ';
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ── SOCIAL PROOF ─────────────────────────────── */
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+    .proof-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.06);
+      border-radius: 10px;
+      padding: 28px;
+    }
+    .proof-card .quote {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .proof-card .author {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ── CTA ───────────────────────────────────────── */
+    .cta-section {
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 60%),
+        var(--navy);
+    }
+    .cta-section .section-title { color: var(--gold); }
+
+    /* ── FOOTER ────────────────────────────────────── */
+    footer {
+      padding: 40px 24px;
+      text-align: center;
+      border-top: 1px solid rgba(212,175,55,0.06);
+    }
+    footer p { font-size: 13px; color: var(--text-faint); }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* ── NAV ───────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10,23,41,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212,175,55,0.06);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      padding: 8px 20px !important;
+      background: var(--gold) !important;
+      color: var(--navy) !important;
+      border-radius: 6px;
+      font-weight: 600 !important;
+    }
+
+    /* ── ANIMATIONS ────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 640px) {
+      section { padding: 60px 20px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero-cta { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">POOLSIDE</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#how">How It Works</a>
+      <a href="https://poolside-pro.netlify.app" class="nav-cta">Launch App →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Now in Beta · Free to Start</div>
+    <h1>
+      POOLSIDE
+      <span>Run your pool from Poolside</span>
+    </h1>
+    <p class="hero-sub">
+      The easiest way to run golf pools, office picks, and fantasy leagues.
+      Live ESPN scores, real-time leaderboards, automatic scoring — all in one beautiful app.
+    </p>
+    <div class="hero-cta">
+      <a href="https://poolside-pro.netlify.app" class="btn-primary">Start Free →</a>
+      <a href="#features" class="btn-secondary">See Features</a>
+    </div>
+    <p class="hero-note">No credit card required · Free for up to 20 players</p>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <p class="section-label">Features</p>
+      <h2 class="section-title">Everything you need to run a great pool</h2>
+      <p class="section-sub">Built by someone who got tired of managing pools in spreadsheets. Poolside handles the messy parts so you can focus on talking trash.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📡</div>
+          <h3>Live ESPN Scores</h3>
+          <p>Real-time scoring from every PGA Tour event. Leaderboards update automatically — no manual entry, no refreshing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>OWGR Tiered Drafting</h3>
+          <p>Pick teams across ranking-based tiers for balanced competition. Customizable tier sizes, pick counts, and best-of scoring.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Automatic Payouts</h3>
+          <p>Set your entry fee, payout split, and Venmo. Players get a QR code at registration. You never chase payments again.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Custom Themes</h3>
+          <p>Choose from 5 premium themes or match your organization's brand. Upload your logo for a white-label experience.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Pool Stats & Insights</h3>
+          <p>Most-picked golfers, unique sleeper picks, best and worst teams today — all calculated automatically in real time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌤</div>
+          <h3>Course Weather & News</h3>
+          <p>Live weather conditions at the tournament venue with animated radar. Plus a scrolling ESPN news ticker.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="background: rgba(255,255,255,0.01);">
+    <div class="container">
+      <p class="section-label" style="text-align:center;">How It Works</p>
+      <h2 class="section-title" style="text-align:center;">Up and running in 2 minutes</h2>
+      <p class="section-sub" style="text-align:center; margin: 0 auto 48px;">No downloads, no installs. Just create, share, and watch.</p>
+
+      <div class="steps">
+        <div class="step">
+          <h3>Create Your League</h3>
+          <p>Pick your tournament, set entry fees, choose a payout structure, and select a theme.</p>
+        </div>
+        <div class="step">
+          <h3>Share the Link</h3>
+          <p>Send your pool link to friends, coworkers, or club members. They pick their teams right from their phone.</p>
+        </div>
+        <div class="step">
+          <h3>Collect Entries</h3>
+          <p>Players pay via Venmo QR code at registration. You see who's paid in your admin panel.</p>
+        </div>
+        <div class="step">
+          <h3>Sit Back & Watch</h3>
+          <p>Live scores, automatic leaderboard updates, and real-time stats. You don't touch a thing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container">
+      <p class="section-label" style="text-align:center;">Pricing</p>
+      <h2 class="section-title" style="text-align:center;">Simple pricing. No surprises.</h2>
+      <p class="section-sub" style="text-align:center; margin: 0 auto 48px;">Start free. Upgrade when you need more.</p>
+
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price-amount">$0</div>
+          <p class="price-note">Perfect for trying it out</p>
+          <ul class="price-features">
+            <li>1 league</li>
+            <li>Up to 20 players</li>
+            <li>Live ESPN scores</li>
+            <li>Basic leaderboard</li>
+            <li>Venmo QR collection</li>
+          </ul>
+          <a href="https://poolside-pro.netlify.app" class="btn-secondary" style="display:block;">Get Started</a>
+        </div>
+
+        <div class="price-card featured">
+          <h3>Pro</h3>
+          <div class="price-amount">$19<span>/mo</span></div>
+          <p class="price-note">or $149/year (save 20%)</p>
+          <ul class="price-features">
+            <li>Unlimited leagues</li>
+            <li>Unlimited players</li>
+            <li>Custom bonuses & scoring</li>
+            <li>Advanced pool stats</li>
+            <li>Weather & news ticker</li>
+            <li>CSV exports</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="https://poolside-pro.netlify.app" class="btn-primary" style="display:block;">Start Free, Upgrade Later</a>
+        </div>
+
+        <div class="price-card">
+          <h3>Elite</h3>
+          <div class="price-amount">$39<span>/mo</span></div>
+          <p class="price-note">or $299/year (save 20%)</p>
+          <ul class="price-features">
+            <li>Everything in Pro</li>
+            <li>Prop challenges</li>
+            <li>Season-long tracking</li>
+            <li>Custom themes & logo</li>
+            <li>White-label option</li>
+            <li>Multiple admins</li>
+          </ul>
+          <a href="https://poolside-pro.netlify.app" class="btn-secondary" style="display:block;">Start Free, Upgrade Later</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFECT FOR -->
+  <section style="background: rgba(255,255,255,0.01);">
+    <div class="container">
+      <p class="section-label" style="text-align:center;">Perfect For</p>
+      <h2 class="section-title" style="text-align:center;">Built for groups who love the game</h2>
+      <div class="proof-grid" style="margin-top:48px;">
+        <div class="proof-card">
+          <div class="quote">"We've been running our Masters pool on a spreadsheet for 8 years. Poolside replaced it in 10 minutes."</div>
+          <div class="author">— Office Pool Organizer</div>
+        </div>
+        <div class="proof-card">
+          <div class="quote">"Our members love the live leaderboard. It's on the TV in the clubhouse all tournament week."</div>
+          <div class="author">— Country Club Pro Shop</div>
+        </div>
+        <div class="proof-card">
+          <div class="quote">"The Venmo QR code alone saved me hours of chasing people down for their $20."</div>
+          <div class="author">— Fantasy Golf League Commissioner</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="container" style="text-align:center;">
+      <h2 class="section-title">Ready to ditch the spreadsheet?</h2>
+      <p class="section-sub" style="margin: 0 auto 36px;">Create your first pool in under 2 minutes. Free for up to 20 players.</p>
+      <a href="https://poolside-pro.netlify.app" class="btn-primary">Create Your Pool →</a>
+      <p style="margin-top:16px; font-size:13px; color: var(--text-faint);">No credit card required</p>
+    </div>
+  </section>
+
+  <footer>
+    <p style="margin-bottom:8px;">
+      <a href="#" class="nav-logo" style="font-size:16px;">POOLSIDE</a>
+    </p>
+    <p>&copy; 2026 Poolside. Built with ⛳ by a finance guy who got tired of spreadsheets.</p>
+  </footer>
+
+</body>
+</html>
